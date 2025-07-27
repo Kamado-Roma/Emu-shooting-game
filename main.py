@@ -1,5 +1,6 @@
 import pygame
 from player import *
+from bullet import *
 class Game():
     
     def __init__(self):
@@ -12,17 +13,22 @@ class Game():
         self.bg = pygame.image.load("Background.jpg")
         self.bg = pygame.transform.scale(self.bg,((800,600)))
         
-        #player
-        self.pimg = pygame.image.load("Emu.png")
-        self.pimg = pygame.transform.scale(self.pimg,(175//1.85, 175//1.85))
-        self.player = Player(350,500, self.pimg)
-        #Enemy
-        self.eimg = pygame.image.load("Tsukasa.png")
-        self.eimg = pygame.transform.scale(self.eimg,(175/1.25, 175//1.25))
-        
         #Bullet
         self.bimg = pygame.image.load("Gihuh.png")
         self.bimg = pygame.transform.scale(self.bimg,(175//5, 175//5))
+        self.bullet = Bullet(355,500 , self.bimg)
+        
+        #bullet_group
+        self.bullet_group = pygame.sprite.Group()
+        
+        
+        #player
+        self.pimg = pygame.image.load("Emu.png")
+        self.pimg = pygame.transform.scale(self.pimg,(175//1.85, 175//1.85))
+        self.player = Player(350,500, self.pimg, self.bimg)
+        #Enemy
+        self.eimg = pygame.image.load("Tsukasa.png")
+        self.eimg = pygame.transform.scale(self.eimg,(175/1.25, 175//1.25))
         
         #clock
         self.clock = pygame.time.Clock()
@@ -35,9 +41,11 @@ class Game():
                     running = False
             self.screen.blit(self.bg,(0,0))
             self.player.draw(self.screen)
-            self.player.move(delta_time)
-            self.screen.blit(self.eimg,(100,50))
-            self.screen.blit(self.bimg,(200,50))
+            bullet = self.player.move(delta_time)
+            if bullet is not None:
+                self.bullet_group.add(bullet)
+            self.bullet_group.draw(self.screen)
+            self.bullet_group.update()
             pygame.display.update()
         pygame.quit()
         
