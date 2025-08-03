@@ -1,6 +1,8 @@
 import pygame
+import random
 from player import *
 from bullet import *
+from enemy import *
 class Game():
     
     def __init__(self):
@@ -29,9 +31,28 @@ class Game():
         #Enemy
         self.eimg = pygame.image.load("Tsukasa.png")
         self.eimg = pygame.transform.scale(self.eimg,(175/1.25, 175//1.25))
+        self.enemy_group = pygame.sprite.Group()
         
         #clock
         self.clock = pygame.time.Clock()
+        self.start_time = pygame.time.get_ticks()
+    def enemy_ai(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.start_time >= 250:
+            randomy = random.randint(25,600)
+            enemy_r = Enemy(randomy,0,self.eimg)
+            self.enemy_group.add(enemy_r)
+            self.start_time = current_time
+        for enemy in self.enemy_group:
+            if enemy.rect.y >= 600:
+                enemy.kill()
+    def touch_bullet(self):
+        for enemy in self.enemy_group:
+            for bullet in self.bullet_group:
+                if bullet.rect.colliderect(enemy.rect):
+                    enemy.kill()
+                    bullet.kill()
+                    break
     def run (self):
         running = True
         while (running):
@@ -46,6 +67,10 @@ class Game():
                 self.bullet_group.add(bullet)
             self.bullet_group.draw(self.screen)
             self.bullet_group.update()
+            self.enemy_ai()
+            self.enemy_group.draw(self.screen)
+            self.enemy_group.update()
+            self.touch_bullet()
             pygame.display.update()
         pygame.quit()
         

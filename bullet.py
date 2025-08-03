@@ -12,3 +12,7 @@ class Bullet(pygame.sprite.Sprite):
     
     def update(self):
         self.rect.y -= 5
+        self.check_wall()
+    def check_wall(self):
+        if self.rect.y <= 0:
+            self.kill() 

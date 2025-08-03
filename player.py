@@ -6,7 +6,7 @@ class Player():
         self.image = image
         self.bimg = bimg
         self.rect = image.get_rect(x=x,y=y)
-        self.velocity = 250
+        self.velocity = 500
         self.flipped = True
         self.fired = False
         self.update_time = pygame.time.get_ticks()
@@ -31,7 +31,7 @@ class Player():
             self.flipped = False
         if self.fired == False and pressed[pygame.K_SPACE]:
             self.fired = True
-            bullet = Bullet(self.rect.x, self.rect.y,self.bimg)
+            bullet = Bullet(self.rect.x + (self.rect.w // 2) - (self.bimg.get_width()//2), self.rect.y,self.bimg)
             
         self.rect.x += dx * self.velocity * dt
         self.check_wall()
